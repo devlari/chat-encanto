@@ -1,38 +1,13 @@
 import appConfig from '../config.json' 
+import React from 'react';
+import { useRouter } from 'next/router'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
 
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-            *{
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                list-style: none;
-            }
-            body{
-                font-family: 'Open Sans', sans-serif;
-            }
-            html,body, #__next {
-                min-height: 100vh;
-                display: flex;
-                flex: 1;
-            }
-            #__next{
-                flex: 1;
-            }
-            #__next > * {
-                flex: 1;
-            }
-        `}
-        </style>
-    )
-}
-
 function Titulo(props) {
-    const Tag = props.tag || 'h1';
-    return (
-      <>
+  const Tag = props.tag || 'h1';
+  
+  return (
+    <>
         <Tag>{props.children}</Tag>
         <style jsx>{`
               ${Tag} {
@@ -43,33 +18,19 @@ function Titulo(props) {
               `}</style>
       </>
     );
-  }
-
-// function HomePage() {
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Title Tag="h1">Bom dia!</Title>
-//             <Title Tag="h2">Bom dia!</Title>
-//             <Title Tag="h3">Bom dia!</Title>
-//             <Title Tag="h4">Bom dia!</Title>
-//             <Title Tag="h5">Bom dia!</Title>
-//             <Title Tag="h6">Bom dia!</Title>
-//         </div>
-//     )
-// }
+}
 
 export default function PaginaInicial() {
-    const username = 'peas';
+    const [username, setUsername] = React.useState()
+    const roteamento = useRouter();
   
     return (
       <>
-        <GlobalStyle />
         <Box
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            backgroundColor: appConfig.theme.colors.primary[500],
-            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+            backgroundColor: appConfig.theme.colors.neutrals[200],
+            backgroundImage: 'url(https://s2.glbimg.com/mHTbsGfQz878eO5ewQj5_mUzAqA=/top/e.glbimg.com/og/ed/f/original/2021/10/25/encanto-online-use-teaser1_039.00_0288.jpg)',
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
@@ -85,19 +46,26 @@ export default function PaginaInicial() {
               width: '100%', maxWidth: '700px',
               borderRadius: '5px', padding: '32px', margin: '16px',
               boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-              backgroundColor: appConfig.theme.colors.neutrals[700],
+              backgroundColor: "rgba(255,255,255,0.3)",
             }}
           >
             {/* Formulário */}
             <Box
               as="form"
+              onSubmit={
+                function(e){
+                  e.preventDefault()
+                  console.log(username)
+                  roteamento.push('/chat')
+                }
+              }
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
               }}
             >
-              <Titulo tag="h2">Boas vindas de volta!</Titulo>
-              <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
+              <Titulo tag="h2">Bem vindo à família Madrigal!</Titulo>
+              <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[200] }}>
                 {appConfig.name}
               </Text>
   
@@ -105,12 +73,17 @@ export default function PaginaInicial() {
                 fullWidth
                 textFieldColors={{
                   neutral: {
-                    textColor: appConfig.theme.colors.neutrals[200],
+                    textColor: appConfig.theme.colors.neutrals[600],
                     mainColor: appConfig.theme.colors.neutrals[900],
-                    mainColorHighlight: appConfig.theme.colors.primary[500],
-                    backgroundColor: appConfig.theme.colors.neutrals[800],
-                  },
+                    mainColorHighlight: appConfig.theme.colors.primary[100],
+                    backgroundColor: appConfig.theme.colors.neutrals[200],
+                  }
                 }}
+                type="text" value={username} 
+                onChange={function (event) {
+                    const valor = event.target.value
+                    setUsername(valor)
+                  }}
               />
               <Button
                 type='submit'
@@ -135,7 +108,7 @@ export default function PaginaInicial() {
                 alignItems: 'center',
                 maxWidth: '200px',
                 padding: '16px',
-                backgroundColor: appConfig.theme.colors.neutrals[800],
+                backgroundColor: "rgba(200, 200, 200, 0.6)",
                 border: '1px solid',
                 borderColor: appConfig.theme.colors.neutrals[999],
                 borderRadius: '10px',
@@ -148,13 +121,13 @@ export default function PaginaInicial() {
                   borderRadius: '50%',
                   marginBottom: '16px',
                 }}
-                src={`https://github.com/${username}.png`}
+                src={`https://github.com/${username && username.length >= 4 ? username : ''}.png`}
               />
               <Text
                 variant="body4"
                 styleSheet={{
-                  color: appConfig.theme.colors.neutrals[200],
-                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  color: appConfig.theme.colors.neutrals[100],
+                  backgroundColor: appConfig.theme.colors.primary[600],
                   padding: '3px 10px',
                   borderRadius: '1000px'
                 }}
