@@ -1,19 +1,45 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
+import { createClient } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import appConfig from "../config.json";
+import { useRouter } from 'next/router'
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
+
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzczMzY5OSwiZXhwIjoxOTU5MzA5Njk5fQ.VRVKW0U1Gu0rKZwcBnHdS2oEYVVpxrEXSokNHcAqEvI"
+const SUPABASE_URL = "https://xhumnypfvqgmkugeqyby.supabase.co"
+const SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export default function ChatPage() {
+  const roteamento = useRouter()
+  const usuario = roteamento.query.username
   const [mensagem, setMensagem] = React.useState("");
   const [lista, setLista] = React.useState([]);
+
+  React.useEffect(() => {
+    const dados = SupabaseClient
+    .from('mensagens')
+    .select('*')
+    .order('id', {ascending: false})
+    .then(({data}) => {
+      setLista(data)
+  })
+  }, [lista])
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
       texto: novaMensagem,
-      de: "devlari",
-      id: lista.length + 1,
+      de: `${usuario}`,
     };
-    setLista([mensagem, ...lista]);
-    setMensagem("");
+
+    SupabaseClient
+        .from('mensagens')
+        .insert([
+            mensagem
+        ])
+        .then(({data}) => {
+            setLista([data[0], ...lista]);
+        })
+        setMensagem("");
   }
 
   return (
@@ -93,6 +119,7 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[700],
               }}
             />
+            <ButtonSendSticker/>
           </Box>
         </Box>
       </Box>

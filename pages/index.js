@@ -2,6 +2,7 @@ import appConfig from '../config.json'
 import React from 'react';
 import { useRouter } from 'next/router'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
+import react from 'react';
 
 function Titulo(props) {
   const Tag = props.tag || 'h1';
@@ -21,7 +22,8 @@ function Titulo(props) {
 }
 
 export default function PaginaInicial() {
-    const [username, setUsername] = React.useState()
+    const [username, setUsername] = React.useState('')
+    const [logo, setLogo] = react.useState('https://i.pinimg.com/564x/42/66/c4/4266c41d0c6f72d31a77a69fd69c8af5.jpg')
     const roteamento = useRouter();
   
     return (
@@ -55,8 +57,7 @@ export default function PaginaInicial() {
               onSubmit={
                 function(e){
                   e.preventDefault()
-                  console.log(username)
-                  roteamento.push('/chat')
+                  roteamento.push(`/chat?username=${username}`)
                 }
               }
               styleSheet={{
@@ -83,6 +84,10 @@ export default function PaginaInicial() {
                 onChange={function (event) {
                     const valor = event.target.value
                     setUsername(valor)
+                    setLogo('https://i.pinimg.com/564x/42/66/c4/4266c41d0c6f72d31a77a69fd69c8af5.jpg')
+                    if(valor.length >= 4){
+                      setLogo(`https://github.com/${valor}.png`)
+                    }
                   }}
               />
               <Button
@@ -121,7 +126,7 @@ export default function PaginaInicial() {
                   borderRadius: '50%',
                   marginBottom: '16px',
                 }}
-                src={`https://github.com/${username && username.length >= 4 ? username : ''}.png`}
+                src={logo}
               />
               <Text
                 variant="body4"
